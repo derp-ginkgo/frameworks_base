@@ -282,7 +282,7 @@ public final class PixelPropsUtils {
         setPropValue("BRAND", "google");
         setPropValue("PRODUCT", "tokay_beta");
         setPropValue("DEVICE", "tokay");
-        setPropValue("VERSION.RELEASE", "Baklava");
+        setPropValue("VERSION.RELEASE", "16");
         setPropValue("ID", "BP31.250502.008");
         setPropValue("VERSION.INCREMENTAL", "13497110");
         setPropValue("TYPE", "user");
