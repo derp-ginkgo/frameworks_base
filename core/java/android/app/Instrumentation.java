@@ -41,7 +41,6 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
-import android.os.SystemProperties;
 import android.os.TestLooperManager;
 import android.os.UserHandle;
 import android.util.AndroidRuntimeException;
@@ -58,15 +57,14 @@ import android.view.WindowManagerGlobal;
 
 import com.android.internal.content.ReferrerIntent;
 
+import com.android.internal.gmscompat.AttestationHooks;
+
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-
-import com.android.internal.util.derp.PixelPropsUtils;
-import com.android.internal.util.derp.MeizuPropsUtils;
 
 /**
  * Base class for implementing application instrumentation code.  When running
@@ -96,8 +94,6 @@ public class Instrumentation {
     private static final String TAG = "Instrumentation";
 
     private static final long CONNECT_TIMEOUT_MILLIS = 5000;
-
-    private static final String DISGUISE_PROPS_FOR_MUSIC_APP = "persist.sys.disguise_props_for_music_app";
 
     /**
      * @hide
@@ -1248,11 +1244,7 @@ public class Instrumentation {
         Application app = getFactory(context.getPackageName())
                 .instantiateApplication(cl, className);
         app.attach(context);
-        String packageName = context.getPackageName();
-        PixelPropsUtils.setProps(context);
-        if (SystemProperties.getBoolean(DISGUISE_PROPS_FOR_MUSIC_APP, false)) {
-            MeizuPropsUtils.setProps(packageName);
-        }
+        AttestationHooks.initApplicationBeforeOnCreate(context);
         return app;
     }
     
@@ -1270,11 +1262,7 @@ public class Instrumentation {
             ClassNotFoundException {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
-        String packageName = context.getPackageName();
-        PixelPropsUtils.setProps(context);
-        if (SystemProperties.getBoolean(DISGUISE_PROPS_FOR_MUSIC_APP, false)) {
-            MeizuPropsUtils.setProps(packageName);
-        }
+        AttestationHooks.initApplicationBeforeOnCreate(context);
         return app;
     }
 
